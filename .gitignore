@@ -2,3 +2,5 @@ Manifest.toml
 .vscode
 docs/build
 *.chkp
+.sisyphus/
+.DS_Store

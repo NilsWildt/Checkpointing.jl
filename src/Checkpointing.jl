@@ -102,15 +102,43 @@ end
 
 include("Rules/EnzymeRules.jl")
 
+# Mooncake.jl backend support
+include("Schemes/MooncakeSchemes.jl")
+include("Rules/MooncakeRules.jl")
+
+# Export Mooncake-specific functions for users who want to use Mooncake directly
+export mooncake_rev_checkpoint_for, mooncake_rev_checkpoint_while, _accumulate_grads!
+
 """
     @ad_checkpoint(
         alg,
         loop,
     )
 
-This macro is supposed to be only used in conjunction with EnzymeRules. It does
-not initialize the shadowcopy. Apply the checkpointing scheme `alg` on the loop
-`loop` expression.
+This macro is supposed to be only used in conjunction with EnzymeRules (default)
+or MooncakeRules. It does not initialize the shadowcopy. Apply the checkpointing 
+scheme `alg` on the loop `loop` expression.
+
+## Backend Selection
+
+The differentiation backend is determined by which AD package you use to call
+the outer differentiation:
+
+- **Enzyme.jl** (default): Uses EnzymeRules for differentiation
+- **Mooncake.jl**: Uses MooncakeRules for differentiation
+
+Example with Enzyme:
+```julia
+using Enzyme
+autodiff(Enzyme.Reverse, my_function, Duplicated(model, dmodel), ...)
+```
+
+Example with Mooncake:
+```julia
+using Mooncake
+val, pb = Mooncake.rrule!!(my_function, model, ...)
+grads = pb(cotangent)
+```
 """
 macro ad_checkpoint(alg, loop)
     range = loop.args[1].args[2]
