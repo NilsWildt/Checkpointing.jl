@@ -5,7 +5,7 @@
 
 This package provides checkpointing schemes for adjoint computations using automatic differentiation (AD) of time-stepping loops. Currently, we support the macro `@ad_checkpoint`, which differentiates and checkpoints a mutable struct used in a while or for loop with a `UnitRange`.
 
-Each loop iteration is differentiated using [Enzyme.jl](https://github.com/EnzymeAD/Enzyme.jl). We rely on external differentiation rule systems to integrate with AD tools applied to the code outside of the loop.
+Each loop iteration is differentiated using [Enzyme.jl](https://github.com/EnzymeAD/Enzyme.jl), or with [Mooncake.jl](https://github.com/chalk-lab/Mooncake.jl) when the loop is differentiated by Mooncake. We rely on external differentiation rule systems to integrate with AD tools applied to the code outside of the loop.
 
 The schemes are agnostic to the AD tool being used and can be easily interfaced with any Julia AD tool. Currently, the package supports:
 
@@ -16,6 +16,7 @@ The schemes are agnostic to the AD tool being used and can be easily interfaced 
 
 ## Rules
 * [EnzymeRules.jl](https://enzyme.mit.edu/julia/stable/generated/custom_rule/)
+* [Mooncake.jl](https://chalk-lab.github.io/Mooncake.jl/stable/) `rrule!!`s (requires `using Mooncake`; provided by a package extension)
 
 ## Storage
 * ArrayStorage: Stores all checkpoints values in an array of type `Array`
